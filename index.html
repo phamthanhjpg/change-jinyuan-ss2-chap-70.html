@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 70</title>
+
+<style>
+
+/* ===== FLOAT BUTTON ===== */
+.fab{
+  position:fixed;
+  right:16px;
+  bottom:90px;
+  z-index:9999;
+}
+.fab-btn{
+  width:48px;
+  height:48px;
+  background:#ff9800;
+  color:#000;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:22px;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.4);
+}
+.fab-menu{
+  position:absolute;
+  bottom:60px;
+  right:0;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+}
+.fab-menu.show{
+  opacity:1;
+  pointer-events:auto;
+}
+.fab-item{
+  width:44px;
+  height:44px;
+  background:#2196f3;
+  color:#fff;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.rainbow-text{
+    font-weight:bold;
+    font-size:15px;
+    text-align:center;
+
+    background: linear-gradient(
+        90deg,
+        red,
+        orange,
+        yellow,
+        green,
+        cyan,
+        blue,
+        violet,
+        red
+    );
+
+    background-size: 400% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: rainbowMove 4s linear infinite;
+}
+
+@keyframes rainbowMove{
+    0%{
+        background-position: 0% 50%;
+    }
+    100%{
+        background-position: 100% 50%;
+    }
+}
+
+.view-box{
+    text-align:center;
+    margin:6px 0;
+}
+
+/* Ẩn tooltip + chặn giữ lâu */
+.view-img{
+    height:16px;
+    width:auto;
+    vertical-align:middle;
+
+    pointer-events:none;   /* 🔥 chặn tooltip */
+    user-select:none;
+    -webkit-user-select:none;
+    -webkit-touch-callout:none; /* Android / iOS */
+}
+
+.to-top{
+    position:fixed;
+    right:16px;
+    bottom:90px;
+    width:44px;
+    height:44px;
+    background:#2196f3;
+    color:#fff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    cursor:pointer;
+    display:none;
+    z-index:150;
+}
+.to-top.show{display:flex}
+
+body{
+    margin:0;
+    background:#111;
+    color:#fff;
+    font-family:Arial, sans-serif;
+}
+a{text-decoration:none;color:inherit}
+
+/* ===== KHỐI TRÊN ===== */
+.top-box{
+    max-width:900px;
+    margin:20px auto;
+    padding:15px;
+    background:#1c1c1c;
+    border-radius:6px;
+}
+.breadcrumb{font-size:13px;color:#aaa;}
+.title{text-align:center;font-size:22px;margin:10px 0;cursor:pointer;}
+.chapter{text-align:center;font-size:18px;}
+.update{text-align:center;font-size:13px;color:#aaa;margin:8px 0;}
+.tip{
+    background:#cfe9ee;
+    color:#000;
+    padding:10px;
+    border-radius:6px;
+    text-align:center;
+    font-size:14px;
+    margin:10px 0;
+}
+
+/* nút trên */
+.top-nav{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+}
+.top-nav a{
+    padding:8px 14px;
+    border-radius:6px;
+    font-size:14px;
+    cursor:pointer;
+}
+.prev{background:#2196f3;}
+.next{background:#888;}
+
+/* ===== ẢNH ===== */
+img{
+    width:100%;
+    max-width:900px;
+    display:block;
+    margin:0 auto;
+    vertical-align:bottom;
+}
+
+/* ===== BOTTOM BAR ===== */
+.bottom-bar{
+    position:fixed;
+    bottom:-80px;
+    left:0;
+    width:100%;
+    background:#000;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:14px;
+    padding:10px 0;
+    transition:.3s;
+}
+.bottom-bar.show{bottom:0;}
+.bottom-bar a{font-size:22px;}
+.chapter-box{
+    background:#2a2a2a;
+    padding:6px 16px;
+    border-radius:6px;
+    font-size:14px;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== FLOAT SETTING BUTTON ===== -->
+<div class="fab">
+  <div class="fab-btn" id="fabMain">⚙</div>
+
+  <div class="fab-menu">
+    <div class="fab-item" id="musicBtn">🎵</div>
+    <div class="fab-item" onclick="lenDau()">⬆</div>
+  </div>
+</div>
+
+<audio id="bgMusic" loop>
+  <source src="nhacnen.mp3" type="audio/mpeg">
+</audio>
+
+
+<div class="top-box">
+    <div class="breadcrumb">
+        <a href="https://dichtruyendrop.github.io/DichTruyenDrop/?fbclid=IwT01FWAPttRRleHRuA2FlbQIxMABzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR5EtCu0G_W454YNT8TstVBUyWJFHVL00KZs3aVNSNjOtnmJsfaSmOHLTKSzlQ_aem_oULb1L8HsnSoU4P-I6anxQ">Trang Chủ</a> /
+        Change (Jinyuan) Ss2 / Chương 70
+    </div>
+
+    <div class="title" onclick="goStory()">
+        Change (Jinyuan) Ss2
+    </div>
+
+    <div class="chapter">- Chapter 70 -</div>
+    
+        <div class="view-box">
+   <div class="rainbow-text">Lượt Xem</div>
+    <img class="view-img"
+         src="https://visitor-badge.laobi.icu/badge?page_id=chapter70&left_text=&left_color=0000000"
+         alt="">
+</div>
+    
+    <div class="update">Cập nhật: 10:50   (28/3/2026)</div>
+
+    <div class="tip">Dùng ← → để chuyển chapter</div>
+
+    <div class="top-nav">
+        <a class="prev" onclick="chapTruoc()">← Chap Trước</a>
+        <a class="next" onclick="chapSau()">Chap Sau →</a>
+    </div>
+</div>
+
+<!-- ===== ẢNH ===== -->
+<img src="https://read1.mideman.com/cmanga/chapter/3402644/c72b90d9de02e5ff0fad32ca21ad23d71bd6a14e.webp?v=1220260226075416">
+<img src="https://read1.mideman.com/cmanga/chapter/3402644/407c50ca38c772168b04de4268b261ed08f6e273.webp?v=1220260226075416">
+<img src="https://raw.githubusercontent.com/DichTruyenDrop/-nh_1/refs/heads/main/0.1.jpg">
+​<img src="https://raw.githubusercontent.com/phamthanhjpg/20h/refs/heads/main/1.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/20h/refs/heads/main/2.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/20h/refs/heads/main/3.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/20h/refs/heads/main/4.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/20h/refs/heads/main/5.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/21h/refs/heads/main/6.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/21h/refs/heads/main/7.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/21h/refs/heads/main/8.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/21h/refs/heads/main/9.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/21h/refs/heads/main/10.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/21h/refs/heads/main/11.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/22h/refs/heads/main/12.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/22h/refs/heads/main/13.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/22h/refs/heads/main/14.png">
+<img src="https://raw.githubusercontent.com/phamthanhjpg/14h/refs/heads/main/0.png">
+<img src="https://read1.mideman.com/cmanga/chapter/3412874/228a63ad6a9819254f44864241d625c274afda8b.webp?v=1220260313214816">
+
+
+
+<!-- ===== BOTTOM BAR ===== -->
+<div class="bottom-bar" id="bar">
+    <a href="https://dichtruyendrop.github.io/DichTruyenDrop/?fbclid=IwT01FWAPttRRleHRuA2FlbQIxMABzcnRjBmFwcF9pZAwzNTA2ODU1MzE3MjgAAR5EtCu0G_W454YNT8TstVBUyWJFHVL00KZs3aVNSNjOtnmJsfaSmOHLTKSzlQ_aem_oULb1L8HsnSoU4P-I6anxQ">🏠</a>
+    <a onclick="chapTruoc()">⬅</a>
+
+    <div class="chapter-box">
+        Chapter 70
+    </div>
+
+    <a onclick="chapSau()">➡</a>
+</div>
+
+<script>
+const CHAP_HIEN_TAI = 70;
+
+/* lưu chap */
+localStorage.setItem("lastChap", CHAP_HIEN_TAI);
+
+/* điều hướng */
+function chapTruoc(){
+    localStorage.setItem("lastChap", CHAP_HIEN_TAI-1);
+    location.href="https://phamthanhjpg.github.io/change-jinyuan-ss2-chap-69.html/?fbclid=IwdGRjcAQ0LxJjbGNrBDQq-2V4dG4DYWVtAjExAHNydGMGYXBwX2lkDDM1MDY4NTUzMTcyOAABHgpUKGKF-wQSxARW14NWPWwi_M1I0a8yn1YyfcJCyKbXDNdsfR6ZUdYl-8DI_aem_kJDE8L2LDC08JuUWu5yexA";
+}
+function chapSau(){
+    localStorage.setItem("lastChap", CHAP_HIEN_TAI+1);
+    location.href="https://raw.githubusercontent.com/DichTruyenDrop/Gif/refs/heads/main/Hetchap.jpg";
+}
+function goStory(){
+    location.href="https://dichtruyendrop.github.io/Change--Jinyuan--Ss2/";
+}
+
+/* scroll */
+window.addEventListener("scroll",()=>{
+    const bar=document.getElementById("bar");
+    const y=scrollY;
+    const max=document.body.scrollHeight-innerHeight;
+
+    if(y<80 || y>max-120) bar.classList.add("show");
+    else bar.classList.remove("show");
+
+    const btn=document.querySelector(".to-top");
+    if(y>400) btn.classList.add("show");
+    else btn.classList.remove("show");
+});
+
+function lenDau(){
+    window.scrollTo({top:0,behavior:"smooth"});
+}
+
+
+const fabMain = document.getElementById("fabMain");
+const fabMenu = document.querySelector(".fab-menu");
+const music = document.getElementById("bgMusic");
+const musicBtn = document.getElementById("musicBtn");
+
+let open = false;
+let playing = false;
+
+fabMain.onclick = () => {
+  open = !open;
+  fabMenu.classList.toggle("show");
+  fabMain.textContent = open ? "❌" : "⚙";
+};
+
+musicBtn.onclick = () => {
+  if(playing){
+    music.pause();
+    musicBtn.textContent = "🎵";
+  }else{
+    music.volume = 0.3;
+    music.play();
+    musicBtn.textContent = "⏸";
+  }
+  playing = !playing;
+};
+</script>
+
+</body>
+</html>
